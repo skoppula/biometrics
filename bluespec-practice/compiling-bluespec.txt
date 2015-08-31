@@ -1,0 +1,8 @@
+bsc -verilog FirstAttempt.bsv
+bsc -o sim -e mkAttempt mkAttempt.v
+
+# From tutorial-helloworld.pdf
+
+$BLUESPECDIR/../doc/BSV/user-guide.pdf
+$BLUESPECDIR/../doc/BSV/reference-guide.pdf
+$BLUESPECDIR/../doc/BSV/bsv-by-example.pdf
