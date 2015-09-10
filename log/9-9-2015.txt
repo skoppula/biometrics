@@ -1,0 +1,14 @@
+Deep dive into the Pathak/Raj paper of 2013 Privacy Preserving Speaker Verification Model
+Thinking about using the exact dataset and algorithm they used ^
+Registered account with Language Consortium to get YOHO dataset
+- Waiting to get registered
+- Unsure how to download data from the site?
+Emailed Chiraag with standup updates
+
+Probably should email them to ask for code
+
+Questions:
+- What dataset should we use?
+    YOHO: https://catalog.ldc.upenn.edu/LDC94S16
+    NIST: https://catalog.ldc.upenn.edu/LDC2004S04
+- What algorithm should we use? Should we use something that has already been converted to a privacy ensuring framework and compromise accuracy? Or try to convert better one? What to start off with?
