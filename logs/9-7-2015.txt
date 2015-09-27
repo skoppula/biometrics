@@ -1,6 +1,0 @@
-Meeting with Chiraag at the lab
-- Chiraag has plethora of awards (and conference nametags)
-- Main claim to fame is a hardware acceleration of privacy protecting speaker recognition (and associated difficulties/changes to existing algorithm that we may need)
-- In next few weeks, try to get speaker recognition dataset
-    - and working basic speaker verification/recognition algorithm implementation
-- Chiraag is working for deadline on Monday
