@@ -1,0 +1,138 @@
+101 M   new york
+102 M   south
+103 M   new york
+104 M   new jersey
+105 F   new jersey
+106 M   new york
+107 M   new jersey
+108 M   new jersey
+109 M   new jersey
+110 M   midwest
+111 M   new york
+112 M   new york
+113 M   new york
+114 M   new york
+115 M   midwest
+116 M   new jersey
+117 M   new york
+118 M   new york
+119 M   new york
+120 M   midwest
+121 M   new york
+122 F   new jersey
+124 M
+125 M   new york
+126 M   New York
+127 M   new york
+128 M   ny-brooklyn
+130 M   new york
+131 M   new york
+132 M   new york
+133 M   N.Y.,LongIsland
+134 M   new york
+135 F   new york
+136 M   pittsburgh
+137 F   new york
+138 M   midwest
+139 M   northeast
+140 M   hong kong
+141 F   new york
+142 M   new jersey
+143 M   new jersey
+144 M   south
+145 M   upstate NY
+146 F
+147 M   estonia
+148 M   new york
+150 M   new york
+151 M   new york
+152 F   new jersey
+154 M   new york
+155 M
+156 M   new york
+157 M   new york
+158 M   new york
+159 M   new jersey
+160 F   new york, south
+161 F   new york
+162 M   new york
+163 F   new jersey
+164 M   new jersey
+165 M   new york
+166 M   new jersey
+167 F   New York
+168 M   new york
+169 M   new york
+170 M   new york
+171 M   new york
+172 F   new york
+174 M   new york
+175 M   west coast
+176 M   none
+178 M   new york
+180 M   new york
+181 M   long island, NY
+182 M   midwest
+183 M   new york
+184 M   new york
+185 M   new york
+188 M   canada/NE
+189 F   new york
+190 M   new jersey
+191 M   new york
+192 F   maryland
+193 M   new york
+196 M   new jersey
+197 M   west coast
+198 M   chinese
+199 F   new york
+200 M   new york
+201 M   new york
+202 M   new york
+203 M   new jersey
+204 M   new jersey
+205 M   new york
+206 M   new york
+207 F   New York
+208 F   new jersey
+209 F   new jersey
+210 M   new york
+211 M   nj, new england
+212 M   new york
+213 M   new york
+215 F
+216 F   new jersey
+218 M   new jersey
+219 M   new york
+220 M   new jersey
+221 F   south
+222 M   south jersey
+223 M   new york
+224 M   midwest
+225 M   new york
+226 F   new york
+227 M
+228 F   israeli
+229 M   new york
+230 M   pennsylvania
+231 F   new york
+232 M
+233 M   new york
+234 M   new jersey
+235 M   Midwest
+236 F   new york
+237 F   new jersey
+238 M   new york
+239 M   new york
+240 F   new jersey
+241 M   new york
+242 M   new york
+243 M   New York
+244 M   new york
+245 M   new jersey
+246 M   new jersey
+247 F   south, georgia
+261 F   new york
+268 F   new york
+271 F   unknown
+277 F   new york
