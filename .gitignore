@@ -1,5 +1,5 @@
 *.swp
 data/timit/*
 data/*.tgz
-.o
+*.o
 *.wav
