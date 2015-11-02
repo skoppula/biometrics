@@ -8,7 +8,7 @@ import time
 from sys import maxint
 
 
-database_path = './Database/'
+database_path = '../data/yoho/enroll/'
 mfcc_path = './MFCC/'
 test_path = './Test/'
 
@@ -21,7 +21,7 @@ def scan_files():
     for user in os.listdir(database_path):
         user_path = database_path + user + '/'
         for files in os.listdir(user_path):
-            if files[-4:] == '.wav':
+            if files[-11:] == '.uncomp.wav':
                 data = read(user_path + files)
                 print 'Extracting mfcc of: ' + user_path + files
 
