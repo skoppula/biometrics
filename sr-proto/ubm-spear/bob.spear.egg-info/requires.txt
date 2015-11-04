@@ -1,0 +1,7 @@
+setuptools
+gridtk >= 1.0.3
+bob >= 1.2.0
+facereclib
+xbob.db.verification.filelist
+xbob.db.voxforge
+xbob.sox

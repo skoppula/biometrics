@@ -1,0 +1,12 @@
+[console_scripts]
+spkverif_jfa.py = spear.script.spkverif_jfa:main
+spkverif_gmm.py = spear.script.spkverif_isv:main
+para_ubm_spkverif_gmm.py = spear.script.para_ubm_spkverif_isv:main
+para_ubm_spkverif_ivector.py = spear.script.para_ubm_spkverif_ivector:main
+spkverif_ivector.py = spear.script.spkverif_ivector:main
+fusion_llr.py = spear.script.fusion_llr:main
+det.py = spear.script.det:main
+evaluate.py = facereclib.script.evaluate:main
+spkverif_isv.py = spear.script.spkverif_isv:main
+para_ubm_spkverif_isv.py = spear.script.para_ubm_spkverif_isv:main
+
