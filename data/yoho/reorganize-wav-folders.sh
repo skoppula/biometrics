@@ -17,7 +17,7 @@ do
     for wav_path in $udir/*.wav
     do
         echo $'\t'"$wav_path"
-        e/bin/w_decode -o short_02 -f "$wav_path" "${wav_path%.*}.sph"
+        w_decode -o short_01 -f "$wav_path" "${wav_path%.*}.sph"
         sox -t sph "${wav_path%.*}.sph" -b 16 -t wav "${wav_path%.*}.uncomp.wav"
     done
 done
