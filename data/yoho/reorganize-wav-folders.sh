@@ -1,12 +1,23 @@
-for dir in ./enroll/*/
+#!/usr/bin/bash
+
+for userdir in ./enroll/*/
 do
-    dir=${dir%*/}
-    for dir2 in $dir/*.sph
+    udir=${userdir%*/}
+    echo "$udir"
+
+    # Move the recordings in the 1/2/3/4 sessions folders
+    # into current user folder
+    # Delete the empty 1/2/3/4 session folders
+    for sessiondir in $udir/*/
     do
-        echo "$dir2"
-        echo "${dir2%.*}.sph"
-        # ./sphere/bin/w_decode -o short_01 -f "$dir2" "${dir2%.*}.sph"
-        sox -t sph "${dir2%.*}.sph" -b 16 -t wav "${dir2%.*}.uncomp.wav"
-        #echo $dir2
+       mv $sessiondir/*.wav $udir
+       rm $sessiondir -r
+    done
+
+    for wav_path in $udir/*.wav
+    do
+        echo $'\t'"$wav_path"
+        e/bin/w_decode -o short_02 -f "$wav_path" "${wav_path%.*}.sph"
+        sox -t sph "${wav_path%.*}.sph" -b 16 -t wav "${wav_path%.*}.uncomp.wav"
     done
 done
