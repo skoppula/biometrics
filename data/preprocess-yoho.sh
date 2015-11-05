@@ -1,6 +1,6 @@
-#!/usr/bin/bash
+#!/bin/bash
 
-for userdir in ./enroll/*/
+for userdir in ./yoho-enroll/*/
 do
     udir=${userdir%*/}
     echo "$udir"
