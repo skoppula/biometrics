@@ -8,9 +8,24 @@ import time
 from sys import maxint
 
 
-database_path = '../data/yoho/enroll/'
-mfcc_path = './MFCC/'
-test_path = './Test/'
+database_path = '../data/yoho-enroll/'
+mfcc_path = '../data/yoho-mfcc/'
+test_path = '../data/yoho-verify'
+
+# FOR THE YOHO DATASET
+#     161 enrollees, 385 utterances/enrollee
+#     117 testers, 120 utterances/tester
+# 
+#     8000 samples/s sample frequency
+#     29,440 samples/utterance
+
+# 15 MFC-coefficients per frame
+#
+# Frame size = sample_frequency*0.025 = 200 samples
+# Step size = sample_frequency*0.01 = 80 samples
+# 182 frames per utterance
+#
+# Final MFCC per utterance: 15 x 182
 
 
 def scan_files():
@@ -18,19 +33,21 @@ def scan_files():
     file, containing the MFCCs of each sample read.
     """
 
-    for user in os.listdir(database_path):
+    num_users = len(os.listdir(database_path))
+    for i, user in enumerate(os.listdir(database_path)):
         user_path = database_path + user + '/'
-        for files in os.listdir(user_path):
+        print 'Analyzing files for user',user,i,'/',num_users
+        num_wavs = len(os.listdir(user_path))
+        for j, files in enumerate(os.listdir(user_path)):
             if files[-11:] == '.uncomp.wav':
                 data = read(user_path + files)
-                print 'Extracting mfcc of: ' + user_path + files
+                print '\tExtracting mfcc of: ' + user_path + files, j,'/',num_wavs
 
                 audio = data[1]
                 f_sampling = data[0]
                 audio_without_silence = vad.compute_vad(audio, f_sampling)
                 mfcc = mel.extract_mfcc(audio_without_silence, f_sampling)
 
-                print 'Saving MFCC at: ' + user_path + files.split('.')[0] + '.mfcc'
                 np.savetxt(user_path + files.split('.')[0] + '.mfcc', mfcc, newline='\n')
 
 
@@ -135,14 +152,17 @@ def test_speaker(models, nameIndex, mfcc, threshold):
     else:
         print "Probably the person who is speaking is from outside the database"
 
+def test():
+    pass
+
 
 if __name__ == '__main__':
     start = time.time()
     print 'Starting the MFCC extraction'
-    scan_files()
-    save_all_mfcc()
+    # scan_files()
+    # save_all_mfcc()
     #models, names = train_model()
     #nameIndex, mfcc = find_speaker(models, names)
     #test_speaker(models, nameIndex, mfcc, 350)
-    #end = time.time()
+    end = time.time()
     print str(end - start) + " seconds"

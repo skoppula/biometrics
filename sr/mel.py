@@ -140,7 +140,7 @@ def liftering(mfcc, l=22):
     return coef * mfcc
 
 
-def extract_mfcc(signal, f_sampling, num_mfcc=13, debug=0):
+def extract_mfcc(signal, f_sampling, num_mfcc=15, debug=0):
     """ Function that extract the Mel-Frequency Cepstral Coefficient from an audio
 
     :param signal: A discrete signal

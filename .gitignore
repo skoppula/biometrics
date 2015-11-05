@@ -1,6 +1,7 @@
 *.swp
 data/yoho-enroll/*
 data/yoho-verify/*
+data/yoho-mfcc/*
 data/*.tgz
 data/*.tar.gz
 *.o
