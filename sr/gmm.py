@@ -1,6 +1,9 @@
 from sklearn import mixture
 import numpy as np
+import sklearn
 
+def get_version():
+    return str(sklearn.__version__)
 
 def gmm(mfcc):
     """ Creates and train a model with some data (MFCC)
@@ -8,7 +11,7 @@ def gmm(mfcc):
     :param mfcc: MFCC of the user to be modeled
     :return: The GMM created
     """
-    g = mixture.GMM(n_components=32)
+    g = mixture.GMM(n_components=33)
     g.fit(mfcc)
     return g
 

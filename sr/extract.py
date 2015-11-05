@@ -1,6 +1,7 @@
 import os
 from scipy.io.wavfile import read
 import numpy as np
+import pickle
 import vad
 import mel
 import gmm
@@ -10,7 +11,8 @@ from sys import maxint
 
 database_path = '../data/yoho-enroll/'
 mfcc_path = '../data/yoho-mfcc/'
-test_path = '../data/yoho-verify'
+test_path = '../data/yoho-verify/'
+model_path = '../data/yoho-models/'
 
 # FOR THE YOHO DATASET
 #     161 enrollees, 385 utterances/enrollee
@@ -26,6 +28,8 @@ test_path = '../data/yoho-verify'
 # 182 frames per utterance
 #
 # Final MFCC per utterance: 15 x 182
+
+# 32 Gaussian Mixtures per speaker
 
 
 def scan_files():
@@ -54,7 +58,7 @@ def scan_files():
 def save_all_mfcc():
     """ Scan all .mfcc files at ./Database/UserName/, group them together by
     username and save one .mfcc file for each user containing all mfcc for
-    this user at ./MFCC/
+    this user at mfcc_path
     """
 
     for user in os.listdir(database_path):
@@ -75,24 +79,29 @@ def save_all_mfcc():
 
 
 def train_model():
-    """ Read all MFCC files at ./MFCC/ and use the coefficients to train
+    """ Read all MFCC files at mfcc_path and use the coefficients to train
     models for each user. The model used is a Gaussian Mixture Model
     """
 
     models = []
     names = []
-    for files in os.listdir(mfcc_path):
-        print 'Training ' + files.split('.')[0] + "'s model"
+    for fyle in os.listdir(mfcc_path):
+        if not (len(fyle) > 5) or fyle[-5:] != '.mfcc': continue
+        name = fyle.split('.')[0]
+        if model_exists(name): continue
+        print 'Training ' + name + "'s model"
         mfcc = np.loadtxt(mfcc_path + files)
-        models.append(gmm.gmm(mfcc))
-        names.append(files.split('.')[0])
+        model = gmm.gmm(mfcc)
+        save_model(model, name)
+        models.append(model)
+        names.append(name)
 
     return models, names
 
 
 def find_speaker(models, names):
     """ Given the user models, returns the user that has the highest likelihood
-    score with the input test located at ./Test/
+    score with the input test located at test_path
 
     :param models: GMM models for each user in the database
     :param names: Name of each user
@@ -152,6 +161,48 @@ def test_speaker(models, nameIndex, mfcc, threshold):
     else:
         print "Probably the person who is speaking is from outside the database"
 
+SKLEARN_VERSION_FILEPATH = model_path + 'sklearn.version'
+
+def model_exists(name):
+    return name + '.models' in os.listdir(model_path)
+
+def save_model(model, name):
+    with open(SKLEARN_VERSION_FILEPATH, 'w') as f:
+        f.write(gmm.get_version())
+
+    path = model_path + name + '.model'
+    print 'Saving', path
+    with open(path, 'wb') as f:
+        pickle.dump(model, f)
+
+def save_models(models, names):
+    assert len(models) == len(names)
+
+    with open(SKLEARN_VERSION_FILEPATH) as f:
+        f.write(str(gmm.get_version()))
+
+    for i, model in enumerate(models):
+        name = names[i]
+        path = model_path + name + '.model'
+        print 'Saving', path
+        with open(path, 'wb') as f:
+            pickle.dump(model, f)
+
+def load_models():
+    models, names = [], []
+    for i, filename in enumerate(os.listdir(model_path)):
+        path = model_path + filename
+        if filename == SKLEARN_VERSION_FILENAME:
+            with open(path, 'r') as f:
+                assert f.readline().strip() == gmm.get_version()
+        elif filename[-6:] == '.model':
+            with open(path, 'rb') as f:
+                name = filename[:-6]
+                model = pickle.load(f)
+                models.append(model)
+                names.append(name)
+    return models, names
+
 def test():
     pass
 
@@ -161,7 +212,7 @@ if __name__ == '__main__':
     print 'Starting the MFCC extraction'
     # scan_files()
     # save_all_mfcc()
-    #models, names = train_model()
+    models, names = train_model()
     #nameIndex, mfcc = find_speaker(models, names)
     #test_speaker(models, nameIndex, mfcc, 350)
     end = time.time()

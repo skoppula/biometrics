@@ -2,6 +2,7 @@
 data/yoho-enroll/*
 data/yoho-verify/*
 data/yoho-mfcc/*
+data/yoho-models/*
 data/*.tgz
 data/*.tar.gz
 *.o
