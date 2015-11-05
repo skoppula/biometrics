@@ -1,9 +1,11 @@
 *.swp
 data/yoho-enroll/*
+data/yoho-verify/*
 data/*.tgz
 data/*.tar.gz
 *.o
 *.wav
+*.sph
 
 .Xauthority
 .bash_history
