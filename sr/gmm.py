@@ -5,13 +5,14 @@ import sklearn
 def get_version():
     return str(sklearn.__version__)
 
-def gmm(mfcc):
+def gmm(mfcc, num_components=33):
     """ Creates and train a model with some data (MFCC)
 
     :param mfcc: MFCC of the user to be modeled
     :return: The GMM created
     """
-    g = mixture.GMM(n_components=33)
+    print 'Training GMM...'
+    g = mixture.GMM(num_components)
     g.fit(mfcc)
     return g
 
