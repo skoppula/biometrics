@@ -90,7 +90,7 @@ def train_model():
         name = fyle.split('.')[0]
         if model_exists(name): continue
         print 'Training ' + name + "'s model"
-        mfcc = np.loadtxt(mfcc_path + files)
+        mfcc = np.loadtxt(mfcc_path + fyle)
         model = gmm.gmm(mfcc)
         save_model(model, name)
         models.append(model)
@@ -98,10 +98,54 @@ def train_model():
 
     return models, names
 
+SKLEARN_VERSION_FILEPATH = model_path + 'sklearn.version'
 
-def find_speaker(models, names):
+def model_exists(name):
+    return name + '.model' in os.listdir(model_path)
+
+def save_model(model, name):
+    with open(SKLEARN_VERSION_FILEPATH, 'w') as f:
+        f.write(gmm.get_version())
+
+    path = model_path + name + '.model'
+    print 'Saving', path
+    with open(path, 'wb') as f:
+        pickle.dump(model, f)
+
+def save_models(models, names):
+    assert len(models) == len(names)
+
+    with open(SKLEARN_VERSION_FILEPATH) as f:
+        f.write(str(gmm.get_version()))
+
+    for i, model in enumerate(models):
+        name = names[i]
+        path = model_path + name + '.model'
+        save_model(model, name)
+
+def assert_sklearn_version():
+    with open(SKLEARN_VERSION_FILEPATH, 'r') as f:
+        assert f.readline().strip() == gmm.get_version()
+
+def load_models():
+    models, names = [], []
+    for filename in os.listdir(model_path):
+        if '.model' in filename:
+            name = filename[:-6]
+            model = load_model(name)
+            models.append(model)
+            names.append(name)
+    return models, names
+
+def load_model(name):
+    path = model_path + name + '.model'
+    with open(path, 'rb') as f:
+        model = pickle.load(f)
+        return model
+
+def identify_speaker(models, names, input_path):
     """ Given the user models, returns the user that has the highest likelihood
-    score with the input test located at test_path
+    score with the input test passed in
 
     :param models: GMM models for each user in the database
     :param names: Name of each user
@@ -110,30 +154,61 @@ def find_speaker(models, names):
     input test and the mfcc from this input test.
     """
 
-    for file in os.listdir(test_path):
-        data = read(test_path + file)
-        print 'Extracting mfcc of: ' + test_path + file
+    data = read(input_path)
+    print 'Extracting mfcc of: ' + test_path + file
 
-        audio = data[1]
-        f_sampling = data[0]
-        audio_without_silence = vad.compute_vad(audio, f_sampling)
-        mfcc = mel.extract_mfcc(audio_without_silence, f_sampling)
+    audio = data[1]
+    f_sampling = data[0]
+    audio_without_silence = vad.compute_vad(audio, f_sampling)
+    mfcc = mel.extract_mfcc(audio_without_silence, f_sampling)
 
-        lk = -maxint - 1
-        index = -1
+    lk = -maxint - 1
+    index = -1
 
-        for i in xrange(len(models)):
-            aux = gmm.get_likehood(models[i], mfcc)
-            print "Score of " + names[i] + ": " + str(aux)
-            if aux > lk:
-                lk = aux
-                index = i
+    for i in xrange(len(models)):
+        aux = gmm.get_likehood(models[i], mfcc)
+        if aux > lk:
+            lk = aux
+            index = i
 
-        print 'The user that had the highest score was: ' + names[index]
-        return index, mfcc
+    return index, name
 
+def test_identification(num_users = 10):
+    assert num_users <= len(os.listdir(model_path)) - 1
+    users = [fyle[:-6] for fyle in os.listdir(model_path) if fyle[-6:] == '.model']
+    possible_test_users = [fyle for fyle in os.listdir(test_path) if len(fyle.split('.')) == 1]
 
-def test_speaker(models, nameIndex, mfcc, threshold):
+    test_users = [user for user in users if user in possible_test_users][0:num_users]
+    print 'Testing classification among enrolled users:',test_users
+
+    models = []
+    for user in test_users:
+        path = model_path + user + '.model'
+        with open(path, 'rb') as f:
+            model = pickle.load(f)
+        models.append(model)
+
+    correct, incorrect = 0,0
+    for user in test_users:
+        print 'Testing for user', user
+        i,c = 0,0
+        for fyle in os.listdir(test_path + user):
+            if fyle[-4:] == '.wav':
+                print '\tTesting for user', user
+                i, name = identify_speaker(models, test_users, test_path + user + '/' + fyle)
+                if name != user: i += 1
+                else: c += 1
+        incorrect += i
+        correct += c
+        print 'Correct tallies:',c,'Incorrect tallies',i
+
+    print 'Total correct classifications:', correct
+    print 'Total incorrect classifications:', incorrect
+    print 'Accuracy', (correct + 0.0)/incorrect
+
+    return correct, incorrect
+
+def verify_speaker(models, nameIndex, mfcc, threshold):
     """ Do the verification process to verify if the user really is the user chosen
     or is someone else from outside the database
 
@@ -161,59 +236,28 @@ def test_speaker(models, nameIndex, mfcc, threshold):
     else:
         print "Probably the person who is speaking is from outside the database"
 
-SKLEARN_VERSION_FILEPATH = model_path + 'sklearn.version'
+def test_verification(threshold, num_speakers_ubm = 100, test_speaker_id = 0):
+    if model_exists('ubm'):
+        ubm_model = build_ubm_model()
+    else:
+        ubm_model = load_model('ubm')
 
-def model_exists(name):
-    return name + '.models' in os.listdir(model_path)
+    assert num_users <= len(os.listdir(model_path)) - 1
+    users = [fyle[:-6] for fyle in os.listdir(model_path) if fyle[-6:] == '.model']
+    possible_test_users = [fyle for fyle in os.listdir(test_path) if len(fyle.split('.')) == 1]
 
-def save_model(model, name):
-    with open(SKLEARN_VERSION_FILEPATH, 'w') as f:
-        f.write(gmm.get_version())
-
-    path = model_path + name + '.model'
-    print 'Saving', path
-    with open(path, 'wb') as f:
-        pickle.dump(model, f)
-
-def save_models(models, names):
-    assert len(models) == len(names)
-
-    with open(SKLEARN_VERSION_FILEPATH) as f:
-        f.write(str(gmm.get_version()))
-
-    for i, model in enumerate(models):
-        name = names[i]
-        path = model_path + name + '.model'
-        print 'Saving', path
-        with open(path, 'wb') as f:
-            pickle.dump(model, f)
-
-def load_models():
-    models, names = [], []
-    for i, filename in enumerate(os.listdir(model_path)):
-        path = model_path + filename
-        if filename == SKLEARN_VERSION_FILENAME:
-            with open(path, 'r') as f:
-                assert f.readline().strip() == gmm.get_version()
-        elif filename[-6:] == '.model':
-            with open(path, 'rb') as f:
-                name = filename[:-6]
-                model = pickle.load(f)
-                models.append(model)
-                names.append(name)
-    return models, names
-
-def test():
-    pass
-
+    ubm_likelihood = ubm_model
+    
+    
 
 if __name__ == '__main__':
     start = time.time()
     print 'Starting the MFCC extraction'
     # scan_files()
     # save_all_mfcc()
-    models, names = train_model()
-    #nameIndex, mfcc = find_speaker(models, names)
-    #test_speaker(models, nameIndex, mfcc, 350)
+    # models, names = train_model()
+    models, names = load_models()
+    # nameIndex, mfcc = identify_speaker(models, names)
+    # verify_speaker(models, nameIndex, mfcc, 350)
     end = time.time()
     print str(end - start) + " seconds"
