@@ -1,0 +1,8 @@
+*.png
+*.txt
+*.pyc
+*.csv
+*.tsv
+*.out
+processed_data/*
+.ipynb_checkpoints/*
